@@ -49,6 +49,7 @@ group :development, :test do
   gem 'better_errors', '~> 2.1.1'
   gem 'pry', '~> 0.10.1'
   gem 'pry-rails', '~> 0.3.4'
+  gem 'awesome_print', '~> 1.6.1'
 end
 
 group :test do
