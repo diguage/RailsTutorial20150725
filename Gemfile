@@ -31,7 +31,6 @@ gem 'fog', '~> 1.32.0'
 gem 'bootstrap-sass', '~> 3.3.5.1'
 gem 'will_paginate', '~> 3.0.7'
 gem 'bootstrap-will_paginate', '~> 0.0.10'
-gem 'puma', '~> 2.12.2'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -61,5 +60,5 @@ end
 
 group :production do
   gem 'mysql2', '~> 0.3.18'
-  # gem 'puma', '~> 2.11.1'
+  gem 'puma', '~> 2.12.2'
 end
