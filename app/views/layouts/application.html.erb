@@ -1,29 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title><%= full_title(yield(:title)) %></title>
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-  <!--[if lt IE 9]>
-    <script src="//cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-  <![endif]-->
-</head>
-<body>
-  <header class="navbar navbar-fixed-top navbar-inverse">
+  <head>
+    <title><%= full_title(yield(:title)) %></title>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+    <%= render 'layouts/shim' %>
+  </head>
+  <body>
+    <%= render 'layouts/header' %>
     <div class="container">
-      <%= link_to "sample app", '#', id: "logo" %>
-      <nav>
-        <ul class="nav navbar-nav navbar-right">
-          <li><%= link_to "Home", '#' %></li>
-          <li><%= link_to "Help", '#' %></li>
-          <li><%= link_to "Log in", '#' %></li>
-        </ul>
-      </nav>
+      <%= yield %>
+      <%= render 'layouts/footer' %>
     </div>
-  </header>
-  <div class="container">
-    <%= yield %>
-  </div>
-</body>
+  </body>
 </html>
