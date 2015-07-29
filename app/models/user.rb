@@ -10,6 +10,11 @@ class User < ActiveRecord::Base
   before_save { self.email = email.downcase } # TODO 为啥后面的self可以省略，而前面的却不能省略？
 
   has_secure_password
+
+  def self.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
 end
 
 

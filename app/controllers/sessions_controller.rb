@@ -5,9 +5,10 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by(email: params[:session][:email].downcase)
     if user && user.authenticate(params[:session][:password])
-      # TODO 登入用户，然后重定向到用户资料页
+      log_in user
+      redirect_to user
     else
-      flash.now[:danger] = 'Invalid email/password combination' # 不完全正确
+      flash.now[:danger] = 'Invalid email/password combination'
       render 'new'
     end
   end
