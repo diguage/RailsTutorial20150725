@@ -3,7 +3,8 @@ class UsersController < ApplicationController
   before_action :correct_user,   only: [:edit, :update]
 
   def index
-    @users = User.all
+    # TODO 如何定义排序规则？如何自定义分页大小？
+    @users = User.paginate(page: params[:page])  # TODO 抽空用Kaminari试试。
   end
 
   def show
