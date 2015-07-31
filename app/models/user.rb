@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-  attr_accessor :remember_token
+  attr_accessor :remember_token, :activation_token
 
   validates :name, presence: true, length: {maximum: 50}
   validates :email, presence: true, length: {maximum: 255},
@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   validates :password, length: {minimum: 6}, allow_blank: true
 
   before_save { self.email = email.downcase } # TODO 为啥后面的self可以省略，而前面的却不能省略？
+  before_create :create_activation_digest     # TODO 有哪些回调函数？
 
   has_secure_password
 
@@ -38,6 +39,13 @@ class User < ActiveRecord::Base
   # 忘记用户
   def forget
     update_attribute(:remember_digest, nil)
+  end
+
+  # 创建令牌和摘要
+  def create_activation_digest
+    self.activation_token  = User.new_token
+    self.activation_digest = User.digest(activation_token) # TODO 为什么这里上面那句activation_token前要加self，而这句则不用加self？
+    # update_attribute(:activation_digest, User.digest(activation_dig))
   end
 end
 
