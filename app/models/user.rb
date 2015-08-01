@@ -42,6 +42,16 @@ class User < ActiveRecord::Base
     update_attribute(:remember_digest, nil)
   end
 
+  # 激活账号
+  def activate
+    update_attributes(activated: true, activated_at: Time.zone.now)
+  end
+
+  # 发送激活邮件
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now # TODO 如何使用后台任务来完成？resque, sidekiq, delayed_job
+  end
+
   private
     # 把电子邮件地址转换成小写
     def downcase_email
