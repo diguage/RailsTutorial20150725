@@ -1,0 +1,2 @@
+class AccoutActivationsController < ApplicationController
+end

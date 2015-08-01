@@ -9,8 +9,8 @@ class User < ActiveRecord::Base
             uniqueness: {case_sensitive: false}
   validates :password, length: {minimum: 6}, allow_blank: true
 
-  before_save { self.email = email.downcase } # TODO 为啥后面的self可以省略，而前面的却不能省略？
   before_create :create_activation_digest     # TODO 有哪些回调函数？
+  before_save   :downcase_email
 
   has_secure_password
 
@@ -41,12 +41,17 @@ class User < ActiveRecord::Base
     update_attribute(:remember_digest, nil)
   end
 
-  # 创建令牌和摘要
-  def create_activation_digest
-    self.activation_token  = User.new_token
-    self.activation_digest = User.digest(activation_token) # TODO 为什么这里上面那句activation_token前要加self，而这句则不用加self？
-    # update_attribute(:activation_digest, User.digest(activation_dig))
-  end
+  private
+    # 把电子邮件地址转换成小写
+    def downcase_email
+      self.email = email.downcase # TODO 为啥后面的self可以省略，而前面的却不能省略？
+    end
+
+    # 创建令牌和摘要
+    def create_activation_digest
+      self.activation_token  = User.new_token
+      self.activation_digest = User.digest(activation_token) # TODO 为什么这里上面那句activation_token前要加self，而这句则不用加self？
+    end
 end
 
 

@@ -19,10 +19,10 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if @user.save
-      log_in @user
-      flash[:success] = "Welcome to the Sample App"
-      redirect_to @user
+    if @user.save  # TODO 为什么把下面的实现修改成这样后，请求巨慢呢？ 另外，如何设置应用的超时时间？
+      UserMailer.account_activation(@user).deliver_now # TODO 如何使用后台任务来完成？resque, sidekiq, delayed_job
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       render 'new'
     end

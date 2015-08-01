@@ -46,3 +46,5 @@ bower.json
 .powenv
 
 /.idea/
+
+config/environments/development.rb

@@ -49,6 +49,8 @@ group :development, :test do
   gem 'pry', '~> 0.10.1'
   gem 'pry-rails', '~> 0.3.4'
   gem 'awesome_print', '~> 1.6.1'
+
+  # gem 'rack-timeout', '~> 0.2.4' # TODO 为了设置Request Timeout增加这个Gem
 end
 
 group :test do

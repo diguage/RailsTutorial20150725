@@ -28,8 +28,8 @@ Rails.application.configure do
   #     # :port => "587",
   #     :domain => "exmail.qq.com",
   #     :authentication => :login,
-  #     :user_name => "noreply@diguage.com",
-  #     :password => "adai123456",
+  #     :user_name => "<Email>",
+  #     :password => "<Password>",
   #     :enable_starttls_auto => false
   # }
 
