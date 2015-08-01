@@ -31,9 +31,10 @@ class User < ActiveRecord::Base
   end
 
   # 如果指定的令牌和摘要匹配，返回true
-  def authenticated?(remember_token)
-    return false if remember_digest.nil? # TODO 这个问题没有复现。8.4.4第二个问题。
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil? # TODO 这个问题没有复现。8.4.4第二个问题。
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   # 忘记用户
