@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   def index
     # TODO 如何定义排序规则？如何自定义分页大小？
-    @users = User.paginate(page: params[:page])  # TODO 抽空用Kaminari试试。
+    @users = User.where(activated: true).paginate(page: params[:page])  # TODO 抽空用Kaminari试试。
   end
 
   def show

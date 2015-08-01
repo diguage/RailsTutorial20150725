@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
   def create_reset_digest
     self.reset_token = User.new_token
     update_attributes(reset_digest:  User.digest(reset_token),
-                      reset_sent_at: Time.zone.now)
+                      reset_sent_at: Time.zone.now) # TODO 书中使用update_columns，这两个方法有什么区别？
   end
 
   # 送密码重设邮件
