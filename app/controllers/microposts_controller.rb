@@ -3,6 +3,15 @@ class MicropostsController < ApplicationController
   before_action :correct_user,   only: :destroy
 
   def create
+    # puts "--puts----------------"
+    # puts params
+    # puts "--p----------------"
+    # puts params
+    # puts "--ap----------------"
+    # puts params
+    # puts "------------------"
+    # ap micropost_params
+    # ap @micropost   # TODO Ruby中，有什么好的日志Gem吗？
     @micropost = current_user.microposts.build(micropost_params)
     if @micropost.save
       flash[:success] = "Micropost created!"
