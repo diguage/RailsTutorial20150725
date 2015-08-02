@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  default_scope -> { order(created_at: :desc) }
+  default_scope -> { order(created_at: :desc) }  # TODO 如何默认的scope不生效？
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
