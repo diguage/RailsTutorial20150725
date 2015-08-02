@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-  attr_accessor :remember_token
+  attr_accessor :remember_token, :activation_token, :reset_token
 
   validates :name, presence: true, length: {maximum: 50}
   validates :email, presence: true, length: {maximum: 255},
@@ -9,7 +9,8 @@ class User < ActiveRecord::Base
             uniqueness: {case_sensitive: false}
   validates :password, length: {minimum: 6}, allow_blank: true
 
-  before_save { self.email = email.downcase } # TODO 为啥后面的self可以省略，而前面的却不能省略？
+  before_create :create_activation_digest     # TODO 有哪些回调函数？
+  before_save   :downcase_email
 
   has_secure_password
 
@@ -30,15 +31,56 @@ class User < ActiveRecord::Base
   end
 
   # 如果指定的令牌和摘要匹配，返回true
-  def authenticated?(remember_token)
-    return false if remember_digest.nil? # TODO 这个问题没有复现。8.4.4第二个问题。
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil? # TODO 这个问题没有复现。8.4.4第二个问题。
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   # 忘记用户
   def forget
     update_attribute(:remember_digest, nil)
   end
+
+  # 激活账号
+  def activate
+    update_attributes(activated:    true,
+                      activated_at: Time.zone.now)
+  end
+
+  # 发送激活邮件
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now # TODO 如何使用后台任务来完成？resque, sidekiq, delayed_job
+  end
+
+  # 设置密码重设相关的属性
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update_attributes(reset_digest:  User.digest(reset_token),
+                      reset_sent_at: Time.zone.now) # TODO 书中使用update_columns，这两个方法有什么区别？
+  end
+
+  # 送密码重设邮件
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
+  end
+
+  # 如果密码重置超时失效了，则返回true
+  def password_reset_expired?
+    reset_sent_at < 2.hour.ago
+  end
+
+  private
+    # 把电子邮件地址转换成小写
+    def downcase_email
+      self.email = email.downcase # TODO 为啥后面的self可以省略，而前面的却不能省略？
+    end
+
+    # 创建令牌和摘要
+    def create_activation_digest
+      self.activation_token  = User.new_token
+      self.activation_digest = User.digest(activation_token) # TODO 为什么这里上面那句activation_token前要加self，而这句则不用加self？
+    end
 end
 
 

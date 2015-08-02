@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   def index
     # TODO 如何定义排序规则？如何自定义分页大小？
-    @users = User.paginate(page: params[:page])  # TODO 抽空用Kaminari试试。
+    @users = User.where(activated: true).paginate(page: params[:page])  # TODO 抽空用Kaminari试试。
   end
 
   def show
@@ -19,10 +19,10 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if @user.save
-      log_in @user
-      flash[:success] = "Welcome to the Sample App"
-      redirect_to @user
+    if @user.save  # TODO 为什么把下面的实现修改成这样后，请求巨慢呢？ 另外，如何设置应用的超时时间？
+      @user.send_activation_email
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       render 'new'
     end

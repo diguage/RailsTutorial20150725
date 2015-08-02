@@ -4,7 +4,10 @@
 <%= f.text_field :name, class: 'form-control' %>
 
 <%= f.label :email %>
-<%= f.text_field :email, class: 'form-control' %>
+<%= f.email_field :email, class: 'form-control' %>
 
 <%= f.label :password %>
 <%= f.password_field :password, class: 'form-control' %>
+
+<!-- # TODO 看看脚手架生成的代码是什么样的？感觉表单的模板不是这样的。 -->
+<!-- # TODO 为什么这里使用 < % % > -->
