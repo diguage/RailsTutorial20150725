@@ -4,11 +4,14 @@ class PictureUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
-  # include CarrierWave::MiniMagick
+  include CarrierWave::MiniMagick
+
+  process resize_to_limit: [400, 400] # TODO 如何裁剪成多种图片格式？另外，如果上传到七牛，那么如何生成不同大小的图片链接？
 
   # Choose what kind of storage to use for this uploader:
   storage :file
   # storage :fog
+  # TODO 如何用上传到七牛？
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -25,8 +28,8 @@ class PictureUploader < CarrierWave::Uploader::Base
   # end
 
   # Process files as they are uploaded:
-  # process :scale => [200, 300]
-  #
+  # process :scale => [400, 400]  # 这个是干什么的啊？
+
   # def scale(width, height)
   #   # do something
   # end
