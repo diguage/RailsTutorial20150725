@@ -5,15 +5,15 @@ class User < ActiveRecord::Base
 
   attr_accessor :remember_token, :activation_token, :reset_token
 
-  has_many :microposts, dependent: :destroy
-  has_many :active_relations, class_name: "Relationship",
-                              foreign_key: "follower_id",
-                              dependent: :destroy
-  has_many :passive_relations, class_name: "Relationship",
-                               foreign_key: "followed_id",
-                               dependent: :destroy
-  has_many :following, through: :active_relations, source: :followed # TODO source是啥意思？
-  has_many :followers, through: :passive_relations, source: :follower # TODO 感觉好繁琐，多对多关联，有这么繁琐吗？
+  has_many :microposts, dependent: :destroy  # TODO 这些都是没有条件的？如何加一些条件？如何只选取没有被删除的？
+  has_many :active_relationships, class_name: "Relationship",
+                                  foreign_key: "follower_id",
+                                  dependent: :destroy
+  has_many :passive_relationships, class_name: "Relationship",
+                                   foreign_key: "followed_id",
+                                   dependent: :destroy
+  has_many :following, through: :active_relationships, source: :followed # TODO source是啥意思？
+  has_many :followers, through: :passive_relationships, source: :follower # TODO 感觉好繁琐，多对多关联，有这么繁琐吗？
 
 
   validates :name, presence: true, length: {maximum: 50}
@@ -91,12 +91,12 @@ class User < ActiveRecord::Base
 
   # 关注另外一个用户
   def follow(other_user)
-    active_relations.create(followed_id: other_user.id)
+    active_relationships.create(followed_id: other_user.id)
   end
 
   # 取消关注另外一个用户
   def unfollow(other_user)
-    active_relations.find_by(followed_id: other_user.id).destroy
+    active_relationships.find_by(followed_id: other_user.id).destroy
   end
 
   # 如果当前用户关注了指定的用户，返回true
