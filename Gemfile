@@ -49,6 +49,8 @@ group :development, :test do
   gem 'pry', '~> 0.10.1'
   gem 'pry-rails', '~> 0.3.4'
   gem 'awesome_print', '~> 1.6.1'
+
+  # gem 'rack-timeout', '~> 0.2.4' # TODO 为了设置Request Timeout增加这个Gem
 end
 
 group :test do
@@ -62,3 +64,6 @@ group :production do
   gem 'mysql2', '~> 0.3.18'
   gem 'puma', '~> 2.12.2'
 end
+
+# TODO 如何定义常量？选用什么Gem？
+# TODO 如何打印日志？有什么好的Gem？

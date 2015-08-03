@@ -14,7 +14,24 @@ Rails.application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :test # TODO 这都是什么意思啊？寄信方式，参考《Rails实战圣经》
+  config.action_mailer.default_url_options = { host: "http://localhost:3000" }
+
+  # config.action_mailer.delivery_method = :smtp # TODO 这都是什么意思啊？寄信方式，参考《Rails实战圣经》
+  #
+  # config.action_mailer.default_url_options = { host: "http://localhost:3000" }
+  # config.action_mailer.smtp_settings = {
+  #     :address => "smtp.exmail.qq.com",
+  #     :port => "25",
+  #     # :port => "465",
+  #     # :port => "587",
+  #     :domain => "exmail.qq.com",
+  #     :authentication => :login,
+  #     :user_name => "noreply@diguage.com",
+  #     :password => "adai123456",
+  #     :enable_starttls_auto => false
+  # }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
