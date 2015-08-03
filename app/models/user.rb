@@ -86,7 +86,13 @@ class User < ActiveRecord::Base
   # 实现动态流原型
   # 完整的实现参见第12章
   def feed
-    Micropost.where("user_id IN (?) OR user_id = ?", following_ids, id) # TODO 如何用户特别多，超过限制怎么办？比如Oracle数据中，IN中的ID只能在四千内的。
+    # 第一种方式
+    # Micropost.where("user_id IN (?) OR user_id = ?", following_ids, id) # TODO 如何用户特别多，超过限制怎么办？比如Oracle数据中，IN中的ID只能在四千内的。
+    # 第二种方式 TODO 这种方式并没有很好的解决上面的问题，只是把上面查一次数据库，变成了查两次数据库。思考有没有更好的方式？
+    following_ids = "SELECT followed_id
+                     FROM relationships
+                     WHERE follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id)
   end
 
   # 关注另外一个用户
