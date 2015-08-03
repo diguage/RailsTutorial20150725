@@ -64,3 +64,6 @@ group :production do
   gem 'mysql2', '~> 0.3.18'
   gem 'puma', '~> 2.12.2'
 end
+
+# TODO 如何定义常量？选用什么Gem？
+# TODO 如何打印日志？有什么好的Gem？

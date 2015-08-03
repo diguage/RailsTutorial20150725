@@ -36,3 +36,9 @@ User.create!(name:  "D瓜哥",
                password:              password,
                password_confirmation: password)
 end
+
+users = User.order(:created_at).take(100) # TODO 如何进行按ID升序排列？为啥怎么试，都是最后几个呢？
+50.times do
+  content = Faker::Lorem.sentence(5)
+  users.each { |user| user.microposts.create!(content: content) }
+end

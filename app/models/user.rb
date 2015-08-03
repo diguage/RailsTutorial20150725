@@ -1,7 +1,11 @@
 class User < ActiveRecord::Base
+  default_scope -> { order(created_at: :desc) }  # TODO 如何默认的scope不生效？
+
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
   attr_accessor :remember_token, :activation_token, :reset_token
+
+  has_many :microposts, dependent: :destroy
 
   validates :name, presence: true, length: {maximum: 50}
   validates :email, presence: true, length: {maximum: 255},
@@ -70,6 +74,12 @@ class User < ActiveRecord::Base
     reset_sent_at < 2.hour.ago
   end
 
+  # 实现动态流原型
+  # 完整的实现参见第12章
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
+
   private
     # 把电子邮件地址转换成小写
     def downcase_email
@@ -85,9 +95,9 @@ end
 
 
 # 模型中代码放置顺序参考：[Rails Style Guide](https://github.com/JuanitoFatas/rails-style-guide/blob/master/README-zhCN.md#-5)
-# 1. 默认的scope放在最前面(如果有)
+# 1. 默认的scope放在最前面(如果有), default_scope
 # 2. 接下来是常量
-# 3. 然后放一些attr相关的宏
-# 4. 仅接着是关联的宏
-# 5. 以及宏的验证
-# 6. 接着是回调
+# 3. 然后放一些attr相关的宏, attr_accessor
+# 4. 仅接着是关联的宏, belongs_to, has_many
+# 5. 以及宏的验证, validates
+# 6. 接着是回调, before_save
