@@ -6,6 +6,11 @@ class User < ActiveRecord::Base
   attr_accessor :remember_token, :activation_token, :reset_token
 
   has_many :microposts, dependent: :destroy
+  has_many :active_relations, class_name: "Relationship",
+                              foreign_key: "follower_id",
+                              dependent: :destroy
+  has_many :following, through: :active_relations, source: :followed # TODO source是啥意思？
+
 
   validates :name, presence: true, length: {maximum: 50}
   validates :email, presence: true, length: {maximum: 255},
@@ -78,6 +83,21 @@ class User < ActiveRecord::Base
   # 完整的实现参见第12章
   def feed
     Micropost.where("user_id = ?", id)
+  end
+
+  # 关注另外一个用户
+  def follow(other_user)
+    active_relations.create(followed_id: other_user.id)
+  end
+
+  # 取消关注另外一个用户
+  def unfollow(other_user)
+    active_relations.find_by(followed_id: other_user.id).destroy
+  end
+
+  # 如果当前用户关注了指定的用户，返回true
+  def following?(other_user)
+    following.include?(other_user)
   end
 
   private
