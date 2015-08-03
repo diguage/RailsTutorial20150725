@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
   # 实现动态流原型
   # 完整的实现参见第12章
   def feed
-    Micropost.where("user_id = ?", id)
+    Micropost.where("user_id IN (?) OR user_id = ?", following_ids, id) # TODO 如何用户特别多，超过限制怎么办？比如Oracle数据中，IN中的ID只能在四千内的。
   end
 
   # 关注另外一个用户
