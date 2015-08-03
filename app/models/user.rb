@@ -9,7 +9,11 @@ class User < ActiveRecord::Base
   has_many :active_relations, class_name: "Relationship",
                               foreign_key: "follower_id",
                               dependent: :destroy
+  has_many :passive_relations, class_name: "Relationship",
+                               foreign_key: "followed_id",
+                               dependent: true
   has_many :following, through: :active_relations, source: :followed # TODO source是啥意思？
+  has_many :followers, through: :passive_relations, source: :follower # TODO 感觉好繁琐，多对多关联，有这么繁琐吗？
 
 
   validates :name, presence: true, length: {maximum: 50}
