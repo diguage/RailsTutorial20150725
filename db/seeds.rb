@@ -42,3 +42,11 @@ users = User.order(:created_at).take(100) # TODO 如何进行按ID升序排列�
   content = Faker::Lorem.sentence(5)
   users.each { |user| user.microposts.create!(content: content) }
 end
+
+# Following relationships
+users = User.all
+user = User.find(1) # TODO 为什么这里使用users.first确取不到第一个用户呢？
+following = users[2..50]
+followers = users[30..80]
+following.each { |followed| user.follow(followed) }
+followers.each { |follower| follower.follow(user) }

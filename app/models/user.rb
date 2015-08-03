@@ -5,7 +5,16 @@ class User < ActiveRecord::Base
 
   attr_accessor :remember_token, :activation_token, :reset_token
 
-  has_many :microposts, dependent: :destroy
+  has_many :microposts, dependent: :destroy  # TODO 这些都是没有条件的？如何加一些条件？如何只选取没有被删除的？
+  has_many :active_relationships, class_name: "Relationship",
+                                  foreign_key: "follower_id",
+                                  dependent: :destroy
+  has_many :passive_relationships, class_name: "Relationship",
+                                   foreign_key: "followed_id",
+                                   dependent: :destroy
+  has_many :following, through: :active_relationships, source: :followed # TODO source是啥意思？
+  has_many :followers, through: :passive_relationships, source: :follower # TODO 感觉好繁琐，多对多关联，有这么繁琐吗？
+
 
   validates :name, presence: true, length: {maximum: 50}
   validates :email, presence: true, length: {maximum: 255},
@@ -77,7 +86,28 @@ class User < ActiveRecord::Base
   # 实现动态流原型
   # 完整的实现参见第12章
   def feed
-    Micropost.where("user_id = ?", id)
+    # 第一种方式
+    # Micropost.where("user_id IN (?) OR user_id = ?", following_ids, id) # TODO 如何用户特别多，超过限制怎么办？比如Oracle数据中，IN中的ID只能在四千内的。
+    # 第二种方式 TODO 这种方式并没有很好的解决上面的问题，只是把上面查一次数据库，变成了查两次数据库。思考有没有更好的方式？
+    following_ids = "SELECT followed_id
+                     FROM relationships
+                     WHERE follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id)
+  end
+
+  # 关注另外一个用户
+  def follow(other_user)
+    active_relationships.create(followed_id: other_user.id)
+  end
+
+  # 取消关注另外一个用户
+  def unfollow(other_user)
+    active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  # 如果当前用户关注了指定的用户，返回true
+  def following?(other_user)
+    following.include?(other_user)
   end
 
   private
