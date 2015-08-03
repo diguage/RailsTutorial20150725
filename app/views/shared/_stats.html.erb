@@ -1,0 +1,15 @@
+<% @user ||= current_user %>
+<div class="stats">
+  <a href="<%= following_user_path(@user) %>"> <!-- TODO 这个路径是如何生成的？ -->
+    <string id="following" class="stat">
+      <%= @user.following.count %>
+    </string>
+    following
+  </a>
+  <a href="<%= followers_user_path(@user) %>">
+    <string id="followers" class="stat">
+      <%= @user.followers.count %>
+    </string>
+    followers
+  </a>
+</div>

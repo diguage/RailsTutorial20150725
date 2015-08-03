@@ -8,6 +8,12 @@ Rails.application.routes.draw do
   post   'login'   => 'sessions#create'
   delete 'logout'  => 'sessions#destroy'
 
+  resources :users do
+    member do
+      get :following, :followers # TODO 这是什么意思？好后学习一下路由规则定义
+    end
+  end
+
   resources :users
   resources :accout_activations, only: [:edit]
   resources :password_resets,    only: [:new, :create, :edit, :update]
